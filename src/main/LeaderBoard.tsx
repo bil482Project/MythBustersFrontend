@@ -44,6 +44,48 @@ const users = [
         day: "baloon",
         game: "baloon",
     },
+        {
+        id: 1,
+        name: "Ali Yılmaz",
+        avatar: "https://randomuser.me/api/portraits/men/11.jpg",
+        day: "hangman",
+        game: "car",
+    },
+    {
+        id: 2,
+        name: "Ayşe Kaya",
+        avatar: "https://randomuser.me/api/portraits/women/12.jpg",
+        day: "hangman",
+        game: "baloon",
+    },
+    {
+        id: 3,
+        name: "Mehmet Demir",
+        avatar: "https://randomuser.me/api/portraits/men/13.jpg",
+        day: "car",
+        game: "car",
+    },
+    {
+        id: 4,
+        name: "Buse Arslan",
+        avatar: "https://randomuser.me/api/portraits/women/14.jpg",
+        day: "baloon",
+        game: "baloon",
+    },
+    {
+        id: 5,
+        name: "Murat Güneş",
+        avatar: "https://randomuser.me/api/portraits/men/15.jpg",
+        day: "hangman",
+        game: "car",
+    },
+    {
+        id: 6,
+        name: "İrem Kurt",
+        avatar: "https://randomuser.me/api/portraits/women/16.jpg",
+        day: "baloon",
+        game: "baloon",
+    },
 
 ];
 
@@ -77,12 +119,12 @@ function LeaderBoard(): React.ReactElement {
                     p: 2,
                     border: "3px solid #333",
                     borderRadius: 4,
-                    minHeight: 415,
-                    maxHeight: 415,
                     mt: 2.5,
                     overflow: "hidden",
-                    display: "flex",
+                    display: "flex",    
                     flexDirection: "column",
+                    width: "90%",
+                    height: "75vh",
                 }}
             >
                 <Typography
