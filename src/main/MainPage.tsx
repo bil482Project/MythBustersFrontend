@@ -1,149 +1,134 @@
-import React from "react";
-import { Box, Paper } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Paper, Avatar, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
 import LeaderBoard from "./LeaderBoard";
+import * as styles from "../styles/MainPage.styles";
+import * as dialogStyles from "../styles/LogoutDialog.styles";
 
-interface MainPageProps {
-  onSelectGame: (gameLabel: string) => void;
+interface UserInfo {
+  username: string;
+  avatar: string;
 }
 
-const games = [
+interface MainPageProps {
+  onSelectScreen: (label: string) => void;
+  user?: UserInfo | null;
+  onLogout?: () => void;
+}
+
+const screen = [
   { label: "Racing Game" },
   { label: "Balloon Popping" },
   { label: "Hangman" },
 ];
 
-function MainPage({ onSelectGame }: MainPageProps) {
+function MainPage({ onSelectScreen, user, onLogout }: MainPageProps) {
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
+  const handleLogoutClick = () => setLogoutDialogOpen(true);
+  const handleDialogClose = () => setLogoutDialogOpen(false);
+
+  const handleLogoutConfirm = () => {
+    setLogoutDialogOpen(false);
+    if (onLogout) onLogout();
+  };
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        overflow: "auto",
-        width: "100%",
-        height: "98vh",
-        boxSizing: "border-box",
-        borderRadius: 5,
-        p: 3,
-        border: "3px solid #184e77",
-        backgroundImage: `url("data:image/svg+xml;utf8,<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='40' height='40' fill='none'/><path d='M0 0L40 40ZM40 0L0 40Z' stroke='%233385b6' stroke-width='0.5'/></svg>")`,
-        bgcolor: "#eaf4fb",
-      }}
-    >
-        <Box
-          flex={6}
-          minWidth={250}
-          pr={{ xs: 0, md: 3 }}
-          display="flex"
-          flexDirection="column"
-          gap={2}
-          sx={{ height: "100%" }}
-        >
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+    <Box sx={styles.root}>
+      <Box sx={styles.leftPane}>
+        <Paper elevation={0} sx={styles.welcomePaper}>
+          Welcome to MythBusters!
+        </Paper>
+        <Box display="flex" gap={3} mb={2}>
+          {screen.map((game) => (
             <Paper
-              elevation={0}
-              sx={{
-                px: 2,
-                py: 1,
-                border: "3px solid #333",
-                borderRadius: 4,
-                minWidth: 180,
-                fontFamily: "'Handlee', cursive",
-                fontSize: 22,
-                bgcolor: "#fff",
-                userSelect: "none",
-              }}
+              key={game.label}
+              component="button"
+              onClick={() => onSelectScreen(game.label)}
+              sx={styles.gameCard}
             >
-              Welcome to MythBusters!
+              {game.label}
             </Paper>
-          </Box>
-          <Box display="flex" gap={3} mb={2}>
-            {games.map((game) => (
-              <Paper
-                key={game.label}
-                component="button"
-                onClick={() => onSelectGame(game.label)}
-                sx={{
-                  flex: 1,
-                  userSelect: "none",
-                  minHeight: 240,
-                  border: "3px solid #333",
-                  borderRadius: 4,
-                  bgcolor: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontFamily: "'Handlee', cursive",
-                  fontSize: 22,
-                  cursor: "pointer",
-                  transition: "background .2s, box-shadow .2s",
-                  "&:hover": {
-                    bgcolor: "#f0f0fa",
-                    boxShadow: 4,
-                  },
-                  outline: "none",
-                }}
-              >
-                {game.label}
-              </Paper>
-            ))}
-          </Box>
-          <Paper
-            elevation={0}
-            component="button"
-            onClick={() => alert('FlashCard Tıklandı')}
-            sx={{
-            flex: 1,
-            userSelect: "none",
-            border: "3px solid #333",
-            borderRadius: 4,
-            bgcolor: "#fff",
-            fontFamily: "'Handlee', cursive",
-            fontSize: 24,
-            cursor: "pointer",
-            transition: "background .2s, box-shadow .2s",
-            "&:hover": {
-            bgcolor: "#f0f0fa",
-            boxShadow: 4,
-            },
-            outline: "none",
-            }}
-          >
-            Learn - FlashCards
+          ))}
+        </Box>
+        <Paper
+          elevation={0}
+          component="button"
+          onClick={() => alert("FlashCard Tıklandı")}
+          sx={styles.flashPaper}
+        >
+          Learn – FlashCards
+        </Paper>
+      </Box>
+
+      <Box sx={styles.rightPane}>
+        <Box display="flex" justifyContent="flex-end" alignItems="center">
+          <Paper elevation={0} sx={styles.authPaper}>
+            {!user ? (
+              <>
+                <Box component="span" sx={styles.authLink} onClick={() => onSelectScreen("Login")}>
+                  Login
+                </Box>
+                /
+                <Box component="span" sx={styles.authLink} onClick={() => onSelectScreen("Register")}>
+                  Sign Up
+                </Box>
+              </>
+            ) : (
+              <Box display="flex" alignItems="center" gap={1} sx={{ py: 0.5 }}>
+                <Avatar src={user.avatar} alt={user.username} sx={{ width: 34, height: 34, mr: 1 }} />
+                <Typography sx={{ fontWeight: 600, fontFamily: "'Handlee', cursive" }}>
+                  {user.username}
+                </Typography>
+                <Button
+                  onClick={handleLogoutClick}
+                  startIcon={<LogoutIcon />}
+                  sx={{
+                    ml: 2,
+                    bgcolor: "#fff0f1",
+                    color: "#c62828",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    px: 2,
+                    py: 0.5,
+                    minWidth: 0,
+                    fontFamily: "'Handlee', cursive",
+                    border: "1px solid #e57373",
+                    textTransform: "none",
+                    "&:hover": {
+                      bgcolor: "#ffe6e8",
+                      color: "#b71c1c",
+                      borderColor: "#f44336"
+                    }
+                  }}
+                >
+                  Logout
+                </Button>
+              </Box>
+            )}
           </Paper>
         </Box>
-        <Box
-          flex={4}
-          minWidth={200}
-          display="flex"
-          flexDirection="column"
-          sx={{ height: "100%" }}
-        >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="flex-end"
-            gap={1}
-            width="100%"
-          >
-            <Paper
-              elevation={0}
-              sx={{
-                px: 2,
-                py: 1,
-                border: "3px solid #333",
-                borderRadius: 4,
-                bgcolor: "#fff",
-                userSelect: "none",
-                fontFamily: "'Handlee', cursive",
-                fontSize: 18,
-                mb: 2,
-              }}
-            >
-              Login / Sign In
-            </Paper>
-          </Box>
-          <LeaderBoard />
-        </Box>
+        <LeaderBoard />
+      </Box>
+
+      <Dialog
+        open={logoutDialogOpen}
+        onClose={handleDialogClose}
+        PaperProps={{ sx: dialogStyles.dialogPaper }}
+      >
+        <DialogTitle sx={dialogStyles.title}>Log Out</DialogTitle>
+        <DialogContent sx={dialogStyles.content}>
+          Are you sure you want to log out?
+        </DialogContent>
+        <DialogActions sx={dialogStyles.actions}>
+          <Button onClick={handleDialogClose} sx={dialogStyles.button}>
+            Cancel
+          </Button>
+          <Button onClick={handleLogoutConfirm} sx={dialogStyles.dangerButton}>
+            Yes, Log Out
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
