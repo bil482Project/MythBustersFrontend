@@ -6,6 +6,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CharacterSelectionPanel from "./CharacterSelection";
 import LeaderBoard from "../main/LeaderBoard";
 import * as styles from "../styles/GameScreen.styles";
+import BalloonGameScreen from "../game/BalloonGameScreen"
 
 interface GameScreenProps {
   title: string;
@@ -15,14 +16,34 @@ interface GameScreenProps {
 const GAME_MODES = ["Speedrun Mode", "Normal Mode", "Hardcore Mode"];
 const GAME_DIFFICULT = ["Easy", "Normal", "Hard"];
 
+const gameScreenMap: { [key: string]: React.ComponentType<any> } = {
+    "Balloon Popping": BalloonGameScreen,
+    //"Racing Game": CarRaceGameScreen,
+    //"Hangman": HangmanGameScreen,
+};
+
 const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain }) => {
-  const [modeIndex, setModeIndex]     = useState(0);
-  const [difficult, setDifficult]     = useState(0);
+    const [modeIndex, setModeIndex]     = useState(0);
+    const [difficult, setDifficult]     = useState(0);
+    const [isGameStarted, setIsGameStarted] = useState(false);
 
-  const prevIndex = (i: number, len: number) => (i === 0 ? len - 1 : i - 1);
-  const nextIndex = (i: number, len: number) => (i === len - 1 ? 0 : i + 1);
+    const prevIndex = (i: number, len: number) => (i === 0 ? len - 1 : i - 1);
+    const nextIndex = (i: number, len: number) => (i === len - 1 ? 0 : i + 1);
 
-  return (
+    const handleStartGame = () => {
+        setIsGameStarted(true);
+    };
+    const GameComponent = gameScreenMap[title];
+
+    return isGameStarted ? 
+    (<GameComponent
+    mode={GAME_MODES[modeIndex]}
+    difficulty={GAME_DIFFICULT[difficult]}
+    onGoBack={() => setIsGameStarted(false)}
+    onGoToMain = {onGoToMain}
+    />)
+    : 
+    (
     <Box sx={styles.root}>
       <Box sx={styles.layout}>
         <CharacterSelectionPanel />
@@ -58,7 +79,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain }) => {
             </IconButton>
           </Paper>
 
-          <Button variant="outlined" sx={styles.mainBtn}>
+          <Button variant="outlined" onClick={handleStartGame} sx={styles.mainBtn}>
             Start Game
           </Button>
 
