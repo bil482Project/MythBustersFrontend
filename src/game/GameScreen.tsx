@@ -8,6 +8,7 @@ import LeaderBoard from "../main/LeaderBoard";
 import * as styles from "../styles/GameScreen.styles";
 import BalloonGameScreen from "../game/BalloonGameScreen"
 import CarRaceGameScreen from "../game/CarRaceGameScreen";
+import HangmanGameScreen from "./HangmanGameScreen";
 interface GameScreenProps {
   title: string;
   onGoToMain: () => void;
@@ -19,7 +20,7 @@ const GAME_DIFFICULT = ["Easy", "Normal", "Hard"];
 const gameScreenMap: { [key: string]: React.ComponentType<any> } = {
     "Balloon Popping": BalloonGameScreen,
     "Car Race": CarRaceGameScreen,
-    //"Hangman": HangmanGameScreen,
+    "Hangman": HangmanGameScreen,
 };
 
 const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain }) => {
@@ -34,15 +35,15 @@ const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain }) => {
         setIsGameStarted(true);
     };
     const GameComponent = gameScreenMap[title];
-    
-    return isGameStarted ? 
+
+    return isGameStarted ?
     (<GameComponent
     mode={GAME_MODES[modeIndex]}
     difficulty={GAME_DIFFICULT[difficult]}
     onGoBack={() => setIsGameStarted(false)}
     onGoToMain = {onGoToMain}
     />)
-    : 
+    :
     (
     <Box sx={styles.root}>
       <Box sx={styles.layout}>
