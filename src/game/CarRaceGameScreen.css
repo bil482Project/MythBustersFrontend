@@ -149,12 +149,12 @@ body {
 }
 
 .question-panel {
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
   min-height: 340px;
   margin-top: 32px;
-  width: 100%;
+  width: 70%;
 }
 
 .question-and-options {
@@ -177,32 +177,61 @@ body {
 .options {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 16px;  /* Şıklar arası boşluk */
   width: 100%;
   align-items: center;
 }
-
-.option-button {
-  font-size: 1.1rem;         /* Eskisi 2.2rem idi */
-  padding: 11px 24px;        /* Eskisi 22px 48px idi */
-  border-radius: 8px;
-  border: none;
-  background: #fffbe6;
-  color: #222;
+.controls{
+  font-size: 1.1rem;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid #f0e6d2;   /* Pastel tonunda hafif kenar çizgisi */
+  background: #fff8f0;          /* Çok açık, pastel arka plan */
+  color: #000000;              /* Yumuşak, pastel yazı rengi */
   font-family: 'Handlee', cursive, sans-serif;
   font-weight: bold;
   cursor: pointer;
-  min-width: 170px;          /* Eskisi 340px idi */
+  min-width: 220px;
   text-align: left;
-  transition: background 0.2s, color 0.2s, transform 0.1s;
-  margin-bottom: 8px;
-  box-shadow: 0 2px 12px #ffd60033;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);  /* Hafif gölge */
+}
+.control-button{
+  font-size: 1.1rem;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid #886217;   /* Pastel tonunda hafif kenar çizgisi */
+  background: #fff8f0;          /* Çok açık, pastel arka plan */
+  color: #000000;              /* Yumuşak, pastel yazı rengi */
+  font-family: 'Handlee', cursive, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  min-width: 220px;
+  text-align: left;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);  /* Hafif gölge */
+}
+
+.option-button {
+  font-size: 1.1rem;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid #f0e6d2;   /* Pastel tonunda hafif kenar çizgisi */
+  background: #fff8f0;          /* Çok açık, pastel arka plan */
+  color: #000000;              /* Yumuşak, pastel yazı rengi */
+  font-family: 'Handlee', cursive, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  min-width: 220px;
+  text-align: left;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);  /* Hafif gölge */
 }
 
 .option-button:hover {
-  background: #ffe066;
-  color: #b8860b;
-  transform: scale(1.03);
+  background: #f7ecd0;   /* Hover durumunda biraz daha belirgin pastel ton */
+  color: #65503b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);  /* Hafif artan gölge efekti */
 }
 
 .game-over {
