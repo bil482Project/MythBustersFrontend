@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Paper, Typography } from "@mui/material";
 import * as styles from "../styles/CharacterSelectionPanel.styles";
+import axios from "axios";
 
 interface CharacterSelectionPanelProps {
   user: User | null;
@@ -126,6 +127,21 @@ const CharacterSelectionPanel: React.FC<CharacterSelectionPanelProps> = ({ user,
       if (user != null && user.coin >= cost) {
         setUser({ ...user, coin: user.coin - cost });
         setAvatar?.(category.icons ? category.icons[itemIndex] : category.items[itemIndex]);
+          //satın alma durumunda coin güncelle
+            if (user) {
+                setUser({ ...user, coin: user.coin });
+                axios.post(`http://localhost:8080/api/profiles/updateCoin/${user.coin}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username: user.username }),
+                })
+                .then(res => {
+                    if (res.status !== 200) throw new Error("API hatası");
+                })
+                .catch(e => console.error("Veri güncellenemedi", e));
+            }
       } else {
         if (user?.coin === undefined) {
           alert("Please login to buy avatars!");

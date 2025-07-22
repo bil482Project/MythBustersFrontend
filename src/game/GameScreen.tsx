@@ -1,5 +1,5 @@
 // src/game/GameScreen.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Paper, Typography, Button, IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -9,6 +9,7 @@ import * as styles from "../styles/GameScreen.styles";
 import BalloonGameScreen from "../game/BalloonGameScreen"
 import CarRaceGameScreen from "../game/CarRaceGameScreen";
 import HangmanGameScreen from "./HangmanGameScreen";
+import axios from "axios";
 type User = {
   username: string;
   avatar: string;
@@ -20,6 +21,8 @@ interface GameScreenProps {
   onGoToMain: () => void;
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  point: number;
+  setPoint: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const GAME_MODES = ["Speedrun Mode", "Normal Mode", "Hardcore Mode"];
@@ -31,7 +34,7 @@ const gameScreenMap: { [key: string]: React.ComponentType<any> } = {
     "Hangman": HangmanGameScreen,
 };
 
-const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain, user, setUser}) => {
+const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain, user, setUser, point, setPoint}) => {
     const [modeIndex, setModeIndex]     = useState(0);
     const [difficult, setDifficult]     = useState(0);
     const [isGameStarted, setIsGameStarted] = useState(false);
@@ -52,6 +55,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain, user, setUse
     onGoBack={() => setIsGameStarted(false)}
     onGoToMain = {onGoToMain}
     avatar={avatar}
+    point={point}
+    setPoint={setPoint}
     />)
     :
     (
@@ -106,5 +111,5 @@ const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain, user, setUse
     </>
   );
 };
-
+//buna useEffect coin ekle
 export default GameScreen;

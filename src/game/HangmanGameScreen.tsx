@@ -13,6 +13,8 @@ interface HangmanGameScreenProps {
   difficulty: string;
   onGoBack: () => void;
   onGoToMain: () => void;
+  point: Number;
+  setPoint: React.Dispatch<React.SetStateAction<Number>>;
 }
 
 // A large, hardcoded list of questions for the game
@@ -323,6 +325,7 @@ const HangmanGameScreen: React.FC<HangmanGameScreenProps> = ({
       const nextQuestionIndex = currentQuestionIndex + 1;
       if (nextQuestionIndex >= questions.length) {
         setGameStatus('won');
+
       } else {
         setCurrentQuestionIndex(nextQuestionIndex);
         setCurrentPhrase(questions[nextQuestionIndex]?.phrase.toUpperCase() || '');

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Paper, Avatar, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LeaderBoard from "./LeaderBoard";

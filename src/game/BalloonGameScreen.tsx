@@ -33,6 +33,8 @@ interface BalloonGameScreenProps {
   difficulty: string;
   onGoBack: () => void;
   onGoToMain: () => void;
+  point: number;
+  setPoint: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const hardcodedQuestions: Question[] = [
@@ -91,6 +93,7 @@ const BalloonGameScreen: React.FC<BalloonGameScreenProps> = ({
   difficulty,
   onGoBack,
   onGoToMain,
+  setPoint
 }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -248,6 +251,7 @@ const BalloonGameScreen: React.FC<BalloonGameScreenProps> = ({
       // Check for win condition
       if (currentQuestionIndex >= questions.length - 1) {
         setGameStatus('won');
+        setPoint(score);
       } else {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
       }

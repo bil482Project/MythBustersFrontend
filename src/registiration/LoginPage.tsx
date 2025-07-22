@@ -30,6 +30,9 @@ export default function LoginPage({ onNavigateToRegister, onLoginSuccess }: Logi
         coin: response.data.coin || 50, // Default to 0 if coin is not provided
       };
 
+      console.log("email: ", email, " password: ", password);
+      console.log("Gelen obj:", userObj);
+
       onLoginSuccess(userObj);
     } catch (e: any) {
       if (e.response && e.response.data && e.response.data.message) {
