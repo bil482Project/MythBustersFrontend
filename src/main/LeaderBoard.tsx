@@ -4,7 +4,7 @@ import * as styles from "../styles/LeaderBoard.styles";
 
 const FILTERS = [
     { label: "Hangman", key: "hangman", color: "#b9f6ca" }, 
-    { label: "Baloon", key: "baloon", color: "#ff8a80" },   
+    { label: "Balloon", key: "balloon", color: "#ff8a80" },   
     { label: "CarRace", key: "car", color: "#b388ff" },     
     { label: "All", key: "all", color: "#fff59d" },         
 ];
@@ -27,8 +27,8 @@ export default function LeaderBoard() {
         setLoading(true);
         setError(null);
 
-        let url = "http://localhost:8080/api/leaderboard" + `?gameType=${selected}`;
-
+        let url = `http://localhost:8080/api/leaderboard?gameType=${selected}`;
+        
         fetch(url)
             .then(res => {
                 if (!res.ok) throw new Error("API hatası");

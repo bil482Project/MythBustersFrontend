@@ -8,10 +8,11 @@ import * as dialogStyles from "../styles/LogoutDialog.styles";
 interface UserInfo {
   username: string;
   avatar: string;
+  coin: number;
 }
 
 interface MainPageProps {
-  onSelectScreen: (label: string) => void;
+  onSelectScreen: (label: string) => void
   user?: UserInfo | null;
   onLogout?: () => void;
 }
@@ -64,6 +65,11 @@ function MainPage({ onSelectScreen, user, onLogout }: MainPageProps) {
       <Box sx={styles.rightPane}>
         <Box display="flex" justifyContent="flex-end" alignItems="center">
           <Paper elevation={0} sx={styles.authPaper}>
+                {user ? <Box component="span" sx={styles.authLink} onClick={() => onSelectScreen("Login")}>
+                  Free to use {user?.coin} gold
+                </Box> : <Box component="span" sx={styles.authLink} onClick={() => onSelectScreen("Login")}>
+                  Login to get free 50 gold
+                </Box>}
             {!user ? (
               <>
                 <Box component="span" sx={styles.authLink} onClick={() => onSelectScreen("Login")}>

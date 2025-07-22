@@ -10,6 +10,7 @@ type ScreenType = "main" | "carRace" | "balloon" | "hangman" | "register" | "log
 type User = {
   username: string;
   avatar: string;
+  coin: number;
 };
 
 function App() {
@@ -43,13 +44,13 @@ function App() {
         />
       )}
       {screen === "carRace" && (
-        <GameScreen title="Car Race" onGoToMain={() => setScreen("main")} />
+        <GameScreen title="Car Race" onGoToMain={() => setScreen("main")} user={user} setUser={setUser}/>
       )}
       {screen === "balloon" && (
-        <GameScreen title="Balloon Popping" onGoToMain={() => setScreen("main")} />
+        <GameScreen title="Balloon Popping" onGoToMain={() => setScreen("main")} user={user} setUser={setUser}/>
       )}
       {screen === "hangman" && (
-        <GameScreen title="Hangman" onGoToMain={() => setScreen("main")} />
+        <GameScreen title="Hangman" onGoToMain={() => setScreen("main")} user={user} setUser={setUser}/>
       )}
       {screen === "login" && (
         <LoginPage

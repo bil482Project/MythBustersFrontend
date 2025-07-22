@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './CarRaceGameScreen.css';
+import { CarRaceStrategyFactory } from './strategies/CarRaceGameStrategy';
 
 type Question = {
   first_choice: string;
@@ -54,52 +55,34 @@ const questions: Question[] = [
   },
 ];
 
-const allCorrects = questions.map(q => q.first_choice);
-const allWrongs = questions.flatMap(q =>
-  [q.second_choice, q.third_choice, q.fourth_choice].filter(Boolean) as string[]
+const allCorrects = questions.map((q) => q.first_choice);
+const allWrongs = questions.flatMap(
+  (q) => [q.second_choice, q.third_choice, q.fourth_choice].filter(Boolean) as string[]
 );
 
 function difficultyScoreMultiplier(difficulty: string): number {
-  switch (difficulty) {
-    case 'Easy': return 1;
-    case 'Normal': return 2;
-    case 'Hard': return 3;
-    default: return 1;
-  }
+  const strategy = CarRaceStrategyFactory.createStrategy(difficulty);
+  return strategy.getPlayerScoreMultiplier();
 }
 
-function modeInterval(mode: string): number {
-  switch (mode) {
-    case 'Hardcore Mode': return 500;
-    case 'Speedrun Mode': return 1000;
-    case 'Normal Mode': return 2000;
-    default: return 500;
-  }
+function modeInterval(mode: string, difficulty: string): number {
+  const strategy = CarRaceStrategyFactory.createStrategy(difficulty);
+  return strategy.getComputerMoveInterval(mode);
 }
 
-function modeScoreMultiplier(mode: string): number {
-  switch (mode) {
-    case 'Hardcore Mode': return 3;
-    case 'Speedrun Mode': return 2;
-    case 'Normal Mode': return 1;
-    default: return 1;
-  }
+function modeScoreMultiplier(mode: string, difficulty: string): number {
+  const strategy = CarRaceStrategyFactory.createStrategy(difficulty);
+  return strategy.getModeScoreMultiplier(mode);
 }
 
 function computerCorrectChance(difficulty: string): number {
-  switch (difficulty) {
-    case 'Easy': return 0.5;
-    case 'Normal': return 0.85;
-    case 'Hard': return 0.9;
-    default: return 0.5;
-  }
+  const strategy = CarRaceStrategyFactory.createStrategy(difficulty);
+  return strategy.getComputerCorrectChance();
 }
 
 function generateQuestionSet(): { correct: string; options: string[] }[] {
-  return allCorrects.map(correct => {
-    const wrongs = shuffleArray(
-      allWrongs.filter(w => w !== correct)
-    ).slice(0, 3);
+  return allCorrects.map((correct) => {
+    const wrongs = shuffleArray(allWrongs.filter((w) => w !== correct)).slice(0, 3);
     const options = shuffleArray([correct, ...wrongs]);
     return { correct, options };
   });
@@ -110,6 +93,7 @@ type CarRaceGameScreenProps = {
   difficulty: string;
   onGoBack: () => void;
   onGoToMain: () => void;
+  avatar?: string;
 };
 
 const Lane: React.FC<{ pos: number; label: string; icon: string }> = ({ pos, label, icon }) => (
@@ -128,7 +112,8 @@ const CarRaceGameScreen: React.FC<CarRaceGameScreenProps> = ({
   mode,
   difficulty,
   onGoBack,
-  onGoToMain
+  onGoToMain,
+  avatar
 }) => {
   const [playerPos, setPlayerPos] = useState(0);
   const [computerPos, setComputerPos] = useState(0);
@@ -141,8 +126,8 @@ const CarRaceGameScreen: React.FC<CarRaceGameScreenProps> = ({
 
   const [questionSet] = useState(() => generateQuestionSet());
   const scoreMultiplier = difficultyScoreMultiplier(difficulty);
-  const compScoreMultiplier = modeScoreMultiplier(mode);
-
+  const compScoreMultiplier = modeScoreMultiplier(mode, difficulty);
+  
   const computerTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Bilgisayarın bağımsız cevaplaması
@@ -173,8 +158,8 @@ const CarRaceGameScreen: React.FC<CarRaceGameScreenProps> = ({
       });
 
       // Bilgisayar bir sonraki soruya geçer
-      setComputerQIdx(prev => (prev + 1) % questionSet.length);
-    }, modeInterval(mode));
+      setComputerQIdx((prev) => (prev + 1) % questionSet.length);
+    }, modeInterval(mode, difficulty));
 
     return () => {
       if (computerTimer.current) clearInterval(computerTimer.current);
@@ -224,7 +209,8 @@ const CarRaceGameScreen: React.FC<CarRaceGameScreenProps> = ({
         <button className ="control-button" onClick={restart}>Restart</button>
       </div>
       <div className="track">
-        <Lane pos={playerPos} icon="🚗" label="You" />
+        {avatar ? <Lane pos={playerPos} icon={avatar} label="You" />
+          : <Lane pos={playerPos} icon="🚗" label="Player" />}
         <Lane pos={computerPos} icon="💻" label="Computer" />
       </div>
       <div className="scoreboard">
@@ -246,7 +232,7 @@ const CarRaceGameScreen: React.FC<CarRaceGameScreenProps> = ({
       )
       : (
         <div className="question-panel">
-          <p className="question">Hangisi doğrudur?</p>
+          <p className="question">Which is correct?</p>
           <div className="options">
             {questionSet[playerQIdx].options.map((opt, i) => (
               <button className="option-button" key={i} onClick={() => handleAnswer(opt)}>

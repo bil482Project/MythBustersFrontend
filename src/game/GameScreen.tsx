@@ -9,9 +9,17 @@ import * as styles from "../styles/GameScreen.styles";
 import BalloonGameScreen from "../game/BalloonGameScreen"
 import CarRaceGameScreen from "../game/CarRaceGameScreen";
 import HangmanGameScreen from "./HangmanGameScreen";
+type User = {
+  username: string;
+  avatar: string;
+  coin: number;
+};
+
 interface GameScreenProps {
   title: string;
   onGoToMain: () => void;
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 const GAME_MODES = ["Speedrun Mode", "Normal Mode", "Hardcore Mode"];
@@ -23,10 +31,11 @@ const gameScreenMap: { [key: string]: React.ComponentType<any> } = {
     "Hangman": HangmanGameScreen,
 };
 
-const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain }) => {
+const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain, user, setUser}) => {
     const [modeIndex, setModeIndex]     = useState(0);
     const [difficult, setDifficult]     = useState(0);
     const [isGameStarted, setIsGameStarted] = useState(false);
+    const [avatar, setAvatar] = useState("🚗");
 
     const prevIndex = (i: number, len: number) => (i === 0 ? len - 1 : i - 1);
     const nextIndex = (i: number, len: number) => (i === len - 1 ? 0 : i + 1);
@@ -42,56 +51,59 @@ const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain }) => {
     difficulty={GAME_DIFFICULT[difficult]}
     onGoBack={() => setIsGameStarted(false)}
     onGoToMain = {onGoToMain}
+    avatar={avatar}
     />)
     :
     (
-    <Box sx={styles.root}>
-      <Box sx={styles.layout}>
-        <CharacterSelectionPanel />
+    <>
+      <Box sx={styles.root}>
+        <Box sx={styles.layout}>
+          <CharacterSelectionPanel user={user} setUser={setUser} avatar={avatar} setAvatar={setAvatar}/>
 
-        <Box sx={styles.centerCol}>
-          <Typography align="center" sx={styles.heading}>
-            {title}
-          </Typography>
+          <Box sx={styles.centerCol}>
+            <Typography align="center" sx={styles.heading}>
+              {title}
+            </Typography>
 
-          <Paper sx={styles.selectorPaper}>
-            <IconButton onClick={() => setModeIndex(prev => prevIndex(prev, GAME_MODES.length))} sx={{ p: 0.7 }}>
-              <ArrowBackIosNewIcon sx={{ fontSize: 24 }} />
-            </IconButton>
-            <Box sx={{ flex: 1 }}>
-              Gamemode<br />
-              <span style={{ fontSize: 22 }}>{GAME_MODES[modeIndex]}</span>
-            </Box>
-            <IconButton onClick={() => setModeIndex(prev => nextIndex(prev, GAME_MODES.length))} sx={{ p: 0.7 }}>
-              <ArrowForwardIosIcon sx={{ fontSize: 24 }} />
-            </IconButton>
-          </Paper>
+            <Paper sx={styles.selectorPaper}>
+              <IconButton onClick={() => setModeIndex(prev => prevIndex(prev, GAME_MODES.length))} sx={{ p: 0.7 }}>
+                <ArrowBackIosNewIcon sx={{ fontSize: 24 }} />
+              </IconButton>
+              <Box sx={{ flex: 1 }}>
+                Gamemode<br />
+                <span style={{ fontSize: 22 }}>{GAME_MODES[modeIndex]}</span>
+              </Box>
+              <IconButton onClick={() => setModeIndex(prev => nextIndex(prev, GAME_MODES.length))} sx={{ p: 0.7 }}>
+                <ArrowForwardIosIcon sx={{ fontSize: 24 }} />
+              </IconButton>
+            </Paper>
 
-          <Paper sx={styles.selectorPaper}>
-            <IconButton onClick={() => setDifficult(prev => prevIndex(prev, GAME_DIFFICULT.length))} sx={{ p: 0.7 }}>
-              <ArrowBackIosNewIcon sx={{ fontSize: 24 }} />
-            </IconButton>
-            <Box sx={{ flex: 1 }}>
-              Difficulty<br />
-              <span style={{ fontSize: 22 }}>{GAME_DIFFICULT[difficult]}</span>
-            </Box>
-            <IconButton onClick={() => setDifficult(prev => nextIndex(prev, GAME_DIFFICULT.length))} sx={{ p: 0.7 }}>
-              <ArrowForwardIosIcon sx={{ fontSize: 24 }} />
-            </IconButton>
-          </Paper>
+            <Paper sx={styles.selectorPaper}>
+              <IconButton onClick={() => setDifficult(prev => prevIndex(prev, GAME_DIFFICULT.length))} sx={{ p: 0.7 }}>
+                <ArrowBackIosNewIcon sx={{ fontSize: 24 }} />
+              </IconButton>
+              <Box sx={{ flex: 1 }}>
+                Difficulty<br />
+                <span style={{ fontSize: 22 }}>{GAME_DIFFICULT[difficult]}</span>
+              </Box>
+              <IconButton onClick={() => setDifficult(prev => nextIndex(prev, GAME_DIFFICULT.length))} sx={{ p: 0.7 }}>
+                <ArrowForwardIosIcon sx={{ fontSize: 24 }} />
+              </IconButton>
+            </Paper>
 
-          <Button variant="outlined" onClick={handleStartGame} sx={styles.mainBtn}>
-            Start Game
-          </Button>
+            <Button variant="outlined" onClick={handleStartGame} sx={styles.mainBtn}>
+              Start Game
+            </Button>
 
-          <Button variant="outlined" onClick={onGoToMain} sx={styles.mainBtn}>
-            Main Menu
-          </Button>
+            <Button variant="outlined" onClick={onGoToMain} sx={styles.mainBtn}>
+              Main Menu
+            </Button>
+          </Box>
+
+          <LeaderBoard />
         </Box>
-
-        <LeaderBoard />
       </Box>
-    </Box>
+    </>
   );
 };
 

@@ -5,7 +5,7 @@ import axios from "axios";
 
 interface RegisterPageProps {
   onNavigateToLogin: () => void;
-  onRegisterSucces: (user: { username: string, avatar: string }) => void;
+  onRegisterSucces: (user: { username: string, avatar: string, coin: number, }) => void;
 }
 
 export default function RegisterPage({ onNavigateToLogin, onRegisterSucces }: RegisterPageProps) {
@@ -29,6 +29,7 @@ export default function RegisterPage({ onNavigateToLogin, onRegisterSucces }: Re
         const userObj = {
           username: response.data.username,
           avatar: response.data.profilePhoto,
+          coin: response.data.coin || 50, // Default to 50 if coin is not provided
         };
 
         onRegisterSucces(userObj);
