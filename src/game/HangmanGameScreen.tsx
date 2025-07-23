@@ -1,12 +1,19 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Box, Typography, Button, Paper, LinearProgress, Fade } from '@mui/material';
 import { HangmanStrategyFactory } from './strategies/HangmanGameStrategy';
+import axios from 'axios';
 
 interface HangmanQuestion {
   id: string;
   phrase: string;
   hint: string;
 }
+
+type User = {
+  username: string;
+  avatar: string;
+  coin: number;
+};
 
 interface HangmanGameScreenProps {
   mode: string;
@@ -15,6 +22,7 @@ interface HangmanGameScreenProps {
   onGoToMain: () => void;
   point: Number;
   setPoint: React.Dispatch<React.SetStateAction<Number>>;
+  user: User | null;
 }
 
 // A large, hardcoded list of questions for the game
@@ -262,6 +270,8 @@ const HangmanGameScreen: React.FC<HangmanGameScreenProps> = ({
   difficulty,
   onGoBack,
   onGoToMain,
+  setPoint,
+  user
 }) => {
   const [questions, setQuestions] = useState<HangmanQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -318,23 +328,28 @@ const HangmanGameScreen: React.FC<HangmanGameScreenProps> = ({
   };
 
   const handleWin = useCallback(() => {
-    showFeedback('correct');
-    const settings = getGameSettings();
-    setScore((prevScore) => prevScore + settings.wordCompletionBonus);
-    setTimeout(() => {
-      const nextQuestionIndex = currentQuestionIndex + 1;
-      if (nextQuestionIndex >= questions.length) {
-        setGameStatus('won');
-
-      } else {
-        setCurrentQuestionIndex(nextQuestionIndex);
-        setCurrentPhrase(questions[nextQuestionIndex]?.phrase.toUpperCase() || '');
-        setGuessedLetters(new Set());
-        setWrongGuesses(0);
-        setIsWordCompleted(false); // Reset flag for next word
-      }
-    }, 1500);
-  }, [currentQuestionIndex, questions, getGameSettings]);
+    return new Promise<number>((resolve) => {
+      showFeedback('correct');
+      const settings = getGameSettings();
+      setScore((prevScore) => {
+        const newScore = prevScore + settings.wordCompletionBonus;
+        setTimeout(() => {
+          const nextQuestionIndex = currentQuestionIndex + 1;
+          if (nextQuestionIndex >= questions.length) {
+            setGameStatus('won');
+            resolve(newScore);
+          } else {
+            setCurrentQuestionIndex(nextQuestionIndex);
+            setCurrentPhrase(questions[nextQuestionIndex]?.phrase.toUpperCase() || '');
+            setGuessedLetters(new Set());
+            setWrongGuesses(0);
+            setIsWordCompleted(false);
+          }
+        }, 1500);
+        return newScore;
+      });
+    });
+  }, [currentQuestionIndex, questions, getGameSettings, score]);
 
   // Initialize game only once when component mounts
   useEffect(() => {
@@ -356,18 +371,30 @@ const HangmanGameScreen: React.FC<HangmanGameScreenProps> = ({
     };
   }, [gameStatus, mode]);
 
-  useEffect(() => {
-    if (!currentPhrase || gameStatus !== 'playing' || isWordCompleted) return;
+useEffect(() => {
+  if (!currentPhrase || gameStatus !== 'playing' || isWordCompleted) return;
 
-    const isComplete = currentPhrase
-      .split('')
-      .every((char) => char === ' ' || guessedLetters.has(char));
+  const isComplete = currentPhrase
+    .split('')
+    .every((char) => char === ' ' || guessedLetters.has(char));
 
-    if (isComplete) {
-      setIsWordCompleted(true);
-      handleWin();
-    }
-  }, [guessedLetters, currentPhrase, gameStatus, isWordCompleted, handleWin]);
+  if (isComplete) {
+    setIsWordCompleted(true);
+    handleWin().then((newScore) => {
+      if (user) { // Error here: TypeScript thinks gameStatus can't be 'won'
+        console.log("score: ", newScore);
+        axios.post(`http://localhost:8080/api/leaderboard/newPoint/${user.username}`, {
+          score: Math.trunc(newScore),
+          gameType: 'hangman'
+        })
+          .catch(error => {
+            console.error('Hata oluştu:', error);
+          });
+        setPoint(newScore);
+      }
+    });
+  }
+}, [guessedLetters, currentPhrase, gameStatus, isWordCompleted, handleWin, user, setPoint]);
 
   const handleLetterGuess = (letter: string) => {
     if (gameStatus !== 'playing' || guessedLetters.has(letter)) return;

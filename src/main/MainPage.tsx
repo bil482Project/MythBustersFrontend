@@ -15,6 +15,7 @@ interface MainPageProps {
   onSelectScreen: (label: string) => void
   user?: UserInfo | null;
   onLogout?: () => void;
+  setGameTitle: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const screen = [
