@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './CarRaceGameScreen.css';
 import { CarRaceStrategyFactory } from './strategies/CarRaceGameStrategy';
+import axios from 'axios';
 
 type Question = {
   first_choice: string;
@@ -88,12 +89,20 @@ function generateQuestionSet(): { correct: string; options: string[] }[] {
   });
 }
 
+type User = {
+  username: string;
+  avatar: string;
+  coin: number;
+};
+
 type CarRaceGameScreenProps = {
   mode: string;
   difficulty: string;
   onGoBack: () => void;
   onGoToMain: () => void;
   avatar?: string;
+  user: User | null;
+  setPoint: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const Lane: React.FC<{ pos: number; label: string; icon: string }> = ({ pos, label, icon }) => (
@@ -113,7 +122,9 @@ const CarRaceGameScreen: React.FC<CarRaceGameScreenProps> = ({
   difficulty,
   onGoBack,
   onGoToMain,
-  avatar
+  avatar,
+  user,
+  setPoint
 }) => {
   const [playerPos, setPlayerPos] = useState(0);
   const [computerPos, setComputerPos] = useState(0);
@@ -129,6 +140,22 @@ const CarRaceGameScreen: React.FC<CarRaceGameScreenProps> = ({
   const compScoreMultiplier = modeScoreMultiplier(mode, difficulty);
   
   const computerTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+  if (gameOver && winner === 'You' && user) {
+      if (user) { // Error here: TypeScript thinks gameStatus can't be 'won'
+        console.log("score: ", score);
+        axios.post(`http://localhost:8080/api/leaderboard/newPoint/${user.username}`, {
+          score: Math.trunc(score),
+          gameType: 'car'
+        })
+          .catch(error => {
+            console.error('Hata oluştu:', error);
+          });
+        setPoint(score);
+      }
+  }
+}, [gameOver, winner, user, score, setPoint]);
 
   // Bilgisayarın bağımsız cevaplaması
   useEffect(() => {

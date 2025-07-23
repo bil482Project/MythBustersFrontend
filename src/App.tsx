@@ -18,6 +18,7 @@ function App() {
   const [screen, setScreen] = useState<ScreenType>("main");
   const [user, setUser] = useState<User | null>(null);
   const [point, setPoint] = useState<number>(0);
+  const [gameTitle, setGameTitle] = useState<string>("");
 
   //kazanma durumunda point değişirse coin güncelle
   useEffect(() => {
@@ -66,6 +67,7 @@ function App() {
           onSelectScreen={handleSelectScreen}
           user={user}
           onLogout={handleLogout}
+          setGameTitle={setGameTitle}
         />
       )}
       {screen === "carRace" && (

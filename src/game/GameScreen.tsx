@@ -10,6 +10,7 @@ import BalloonGameScreen from "../game/BalloonGameScreen"
 import CarRaceGameScreen from "../game/CarRaceGameScreen";
 import HangmanGameScreen from "./HangmanGameScreen";
 import axios from "axios";
+import { userInfo } from "node:os";
 type User = {
   username: string;
   avatar: string;
@@ -57,6 +58,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ title, onGoToMain, user, setUse
     avatar={avatar}
     point={point}
     setPoint={setPoint}
+    user={user}
     />)
     :
     (

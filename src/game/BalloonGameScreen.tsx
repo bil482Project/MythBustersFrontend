@@ -6,6 +6,13 @@ import PauseIcon from '@mui/icons-material/Pause';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import TimerIcon from '@mui/icons-material/Timer';
 import { BalloonStrategyFactory } from './strategies/BalloonGameStrategy';
+import axios from 'axios';
+
+type User = {
+  username: string;
+  avatar: string;
+  coin: number;
+};
 
 const popAnimation = keyframes`
   0% { transform: scale(1); opacity: 1; }
@@ -35,6 +42,7 @@ interface BalloonGameScreenProps {
   onGoToMain: () => void;
   point: number;
   setPoint: React.Dispatch<React.SetStateAction<number>>;
+  user: User | null;
 }
 
 const hardcodedQuestions: Question[] = [
@@ -93,7 +101,9 @@ const BalloonGameScreen: React.FC<BalloonGameScreenProps> = ({
   difficulty,
   onGoBack,
   onGoToMain,
-  setPoint
+  setPoint,
+  user,
+  point
 }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -202,6 +212,23 @@ const BalloonGameScreen: React.FC<BalloonGameScreenProps> = ({
     return () => clearInterval(gameInterval);
   }, [gameStatus, getGameSettings]);
 
+  useEffect(() => {
+  if (gameStatus === 'won'  && user) {
+      if (user) { // Error here: TypeScript thinks gameStatus can't be 'won'
+        console.log("score: ", score);
+        axios.post(`http://localhost:8080/api/leaderboard/newPoint/${user.username}`, {
+          score: Math.trunc(score),
+          gameType: 'balloon'
+        })
+          .catch(error => {
+            console.error('Hata oluştu:', error);
+          });
+        setPoint(score);
+      }
+  }
+}, [gameStatus, user, score, setPoint]);
+
+
   // Check for game over if all balloons are popped before questions are finished
   useEffect(() => {
     if (gameStatus === 'playing' && balloons.length > 0 && balloons.every((b) => b.isPopped)) {
@@ -289,7 +316,7 @@ const BalloonGameScreen: React.FC<BalloonGameScreenProps> = ({
           <Typography sx={{ mb: 1 }}>Your Score: {score}</Typography>
           {mode === 'Speedrun Mode' && <Typography sx={{ mb: 1 }}>Your Time: {timer}s</Typography>}
           <Typography sx={{ mb: 2, color: 'red' }}>
-            {gameStatus === 'gameOver' ? gameOverReason : "You've busted all the myths!"}
+            {gameStatus === 'gameOver' ? gameOverReason : score == 30 ? "You've busted all the myths!" : "Game Over"}
           </Typography>
           <Button
             variant='outlined'
