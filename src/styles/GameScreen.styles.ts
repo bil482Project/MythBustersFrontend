@@ -6,9 +6,8 @@ export const root: SxProps<Theme> = {
   justifyContent: "center",
   overflow: "auto",
   width: "100%",
-  height: "98vh",
+  height: "100vh",
   boxSizing: "border-box",
-  borderRadius: 5,
   p: 3,
   border: "3px solid #184e77",
   backgroundImage:

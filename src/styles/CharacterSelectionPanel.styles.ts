@@ -4,12 +4,13 @@ import { SxProps, Theme } from "@mui/material";
 export const wrapper: SxProps<Theme> = {
   borderRadius: 5,
   p: 4,
-  gap: 3,
+  gap: 1,
   mt: 2.5,
   height: "80%",
   border: "3px solid #333",
   bgcolor: "#fff",
   display: "flex",
+  width: "30%",
   flexDirection: "column",
   userSelect: "none",
 };
@@ -48,7 +49,7 @@ export const itemCard: SxProps<Theme> = {
   alignItems: "center",
   justifyContent: "center",
   fontFamily: "'Handlee', cursive",
-  fontSize: 20,
+  fontSize: 16,
   bgcolor: "#fff",
   cursor: "pointer",
   userSelect: "none",

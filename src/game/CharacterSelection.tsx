@@ -155,7 +155,11 @@ const CharacterSelectionPanel: React.FC<CharacterSelectionPanelProps> = ({ user,
   return (
     <Paper sx={styles.wrapper}>
       <Typography sx={styles.title}>Select Character</Typography>
-      <Typography sx={{ mb: 2 }}>Coin Left: {user?.coin}</Typography>
+      <Typography sx={{ mb: 2,   
+                      fontFamily: "'Handlee', cursive",
+                      fontWeight: 400,
+                      fontSize: 18,
+                      }}>Coin Left: {user?.coin}</Typography>
 
       {characterCategories.map((cat, catIdx) => (
         <Box key={cat.title} sx={{ mb: catIdx !== characterCategories.length - 1 ? 2 : 0 }}>

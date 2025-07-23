@@ -12,7 +12,7 @@ export const wrapper: SxProps<Theme> = {
   display: "flex",
   flexDirection: "column",
   width: "90%",
-  height: "75vh",
+  height: "78vh",
 };
 
 export const title: SxProps<Theme> = {

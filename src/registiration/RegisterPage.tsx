@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import { Box, Paper, TextField, Button, Typography } from "@mui/material";
 import * as styles from "../styles/AuthPage.styles";
 import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
 
 const INITIAL_COIN = 50; // Default coin value
 
 interface RegisterPageProps {
   onNavigateToLogin: () => void;
   onRegisterSucces: (user: { username: string, avatar: string, coin: number, }) => void;
+  onCancel: () => void; 
 }
 
-export default function RegisterPage({ onNavigateToLogin, onRegisterSucces }: RegisterPageProps) {
+export default function RegisterPage({ onNavigateToLogin, onRegisterSucces, onCancel }: RegisterPageProps) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,9 +51,23 @@ export default function RegisterPage({ onNavigateToLogin, onRegisterSucces }: Re
 
   return (
     <Box sx={styles.root}>
+      <Button
+        onClick={onCancel}
+        sx={{
+          position: "absolute",
+          top: 16,
+          right: 16,
+          minWidth: 0,
+          padding: 0,
+          color: "black",
+          zIndex: 10
+        }}
+      >
+        <CloseIcon sx={{ fontSize: 36 }} />
+      </Button>
+
       <Paper elevation={0} sx={styles.card}>
         <Typography sx={styles.title}>Sign Up</Typography>
-
         <TextField
           label="Name"
           variant="outlined"

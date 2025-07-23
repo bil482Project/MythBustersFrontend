@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Box, Paper, TextField, Button, Typography } from "@mui/material";
 import * as styles from "../styles/AuthPage.styles";
 import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface LoginPageProps {
   onNavigateToRegister: () => void;
   onLoginSuccess: (user: { username: string; avatar: string; coin: number; }) => void;
+  onCancel: () => void; 
 }
 
-export default function LoginPage({ onNavigateToRegister, onLoginSuccess }: LoginPageProps) {
+export default function LoginPage({ onNavigateToRegister, onLoginSuccess, onCancel }: LoginPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -49,8 +51,21 @@ export default function LoginPage({ onNavigateToRegister, onLoginSuccess }: Logi
   return (
     <Box sx={styles.root}>
       <Paper elevation={0} sx={styles.card}>
+        <Button
+        onClick={onCancel}
+        sx={{
+          position: "absolute",
+          top: 16,
+          right: 16,
+          minWidth: 0,
+          padding: 0,
+          color: "black",
+          zIndex: 10
+        }}
+      >
+        <CloseIcon sx={{ fontSize: 36 }} />
+      </Button>
         <Typography sx={styles.title}>Login</Typography>
-
         <TextField
           label="Email"
           variant="outlined"

@@ -5,9 +5,8 @@ export const root: SxProps<Theme> = {
   justifyContent: "center",
   overflow: "auto",
   width: "100%",
-  height: "98vh",
+  height: "100vh",
   boxSizing: "border-box",
-  borderRadius: 5,
   p: 3,
   border: "3px solid #184e77",
   backgroundImage:
@@ -67,6 +66,7 @@ export const flashPaper: SxProps<Theme> = {
   bgcolor: "#fff",
   fontFamily: "'Handlee', cursive",
   fontSize: 24,
+  minHeight: 335,
   cursor: "pointer",
   transition: "background .2s, box-shadow .2s",
   "&:hover": {

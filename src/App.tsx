@@ -84,6 +84,7 @@ function App() {
             setUser(userObj);
             setScreen("main");
           }}
+          onCancel={() => setScreen("main")}
         />
       )}
       {screen === "register" && (
@@ -93,6 +94,7 @@ function App() {
             setUser(userObj);
             setScreen("main");
           }}
+          onCancel={() => setScreen("main")}
         />
       )}
     </Box>
